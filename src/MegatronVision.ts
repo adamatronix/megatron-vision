@@ -10,14 +10,35 @@ class MegatronVision {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
+  video: HTMLVideoElement;
 
   constructor(el: HTMLDivElement, options?: LooseObject) {
     this.container = el;
     this.options = {}
     this.options = { ...this.options, ...options};
 
+   
     this.setupWorld();
     this.renderFrame();
+
+    this.video = this.createVideo(this.options.src);
+    this.video.addEventListener("loadedmetadata",this.setupVideo);
+    this.setupVideo = this.setupVideo.bind(this);
+  }
+
+  setupVideo = () => {
+    let videoWidth = this.video.videoWidth;
+    let videoHeight = this.video.videoHeight;
+    console.log(videoHeight);
+    let aspect = videoWidth / videoHeight;
+
+    let texture = new THREE.VideoTexture( this.video );
+    const material = new THREE.MeshLambertMaterial( {color:0xffffff, map:texture } );
+    const product = new THREE.BoxGeometry(  50*aspect, 50, 20 );
+    const productMesh = new THREE.Mesh(product, material);
+    this.scene.add(productMesh);
+
+    this.video.play();
 
   }
 
@@ -29,7 +50,7 @@ class MegatronVision {
     const near = 0.1;
     const far = 500;
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this.camera.position.set(0, 100, 0);
+    this.camera.position.set(0, 0, 100);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		this.camera.updateProjectionMatrix();
 
@@ -60,6 +81,16 @@ class MegatronVision {
     this.requestId = requestAnimationFrame(this.renderFrame);
     this.renderer.clear();
     this.renderer.render( this.scene, this.camera );
+  }
+
+  createVideo = (source:string) => {
+    var el = document.createElement("video");
+    el.style.display = "none";
+    el.crossOrigin = "anonymous";
+    el.muted = true;
+    el.loop = true;
+    el.src = source;
+    return el;
   }
 
 
