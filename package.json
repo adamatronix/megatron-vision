@@ -35,6 +35,8 @@
   },
   "dependencies": {
     "@parcel/transformer-babel": "^2.2.1",
+    "@types/styled-components": "^5.1.21",
+    "@types/three": "^0.136.1",
     "three": "^0.136.0"
   }
 }

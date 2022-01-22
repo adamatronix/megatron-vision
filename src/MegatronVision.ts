@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 interface LooseObject {
   [key: string]: any
@@ -33,8 +34,8 @@ class MegatronVision {
     let aspect = videoWidth / videoHeight;
 
     let texture = new THREE.VideoTexture( this.video );
-    const material = new THREE.MeshLambertMaterial( {color:0xffffff, map:texture } );
-    const product = new THREE.BoxGeometry(  50*aspect, 50, 20 );
+    const material = new THREE.MeshLambertMaterial( { map:texture, side: THREE.BackSide } );
+    const product = new THREE.BoxGeometry(  50*aspect, 50, 50* aspect );
     const productMesh = new THREE.Mesh(product, material);
     this.scene.add(productMesh);
 
@@ -50,7 +51,7 @@ class MegatronVision {
     const near = 0.1;
     const far = 500;
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this.camera.position.set(0, 0, 100);
+    this.camera.position.set(0, 0, 50);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		this.camera.updateProjectionMatrix();
 
@@ -75,6 +76,11 @@ class MegatronVision {
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize( this.container.offsetWidth, this.container.offsetHeight );
     this.container.appendChild( this.renderer.domElement );
+
+    //setup controls
+    let controls = new OrbitControls( this.camera, this.renderer.domElement);
+    controls.minDistance = 0;
+    controls.maxDistance = 500;
   }
 
   renderFrame = () => {
