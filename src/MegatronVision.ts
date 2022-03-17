@@ -9,6 +9,7 @@ class MegatronVision {
   container:HTMLDivElement;
   requestId:number;
   scene: THREE.Scene;
+  controls: any;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   video: HTMLVideoElement;
@@ -87,14 +88,17 @@ class MegatronVision {
     this.container.appendChild( this.renderer.domElement );
 
     //setup controls
-    let controls = new OrbitControls( this.camera, this.renderer.domElement);
-    controls.minDistance = 0;
-    controls.maxDistance = 500;
+    this.controls = new OrbitControls( this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true;
+    this.controls.minDistance = 0;
+    this.controls.maxDistance = 75;
+    this.controls.enablePan = false;
   }
 
   renderFrame = () => {
     this.requestId = requestAnimationFrame(this.renderFrame);
     this.renderer.clear();
+    this.controls.update();
     this.renderer.render( this.scene, this.camera );
   }
 
@@ -109,14 +113,16 @@ class MegatronVision {
   }
 
   destroy = () => {
+    this.video.pause();
     cancelAnimationFrame(this.requestId);
     this.video.removeEventListener("loadedmetadata",this.setupVideo);
     this.video.removeEventListener("ended",this.options.endedCallback);
+    document.removeChild(this.video);
     this.video = null;
     this.scene = null;
     this.camera = null;
     this.renderer = null;
-    this.container = null;
+    this.container.innerHTML = '';
   }
 
 }
