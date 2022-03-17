@@ -1,6 +1,8 @@
 {
   "name": "@manualengineering/megatron-vision",
   "version": "1.0.0",
+  "description": "Big 3d video room",
+  "source": "src/index.ts",
   "main": "dist/index.js",
   "targets": {
     "example": {
