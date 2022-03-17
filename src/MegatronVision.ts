@@ -15,7 +15,14 @@ class MegatronVision {
 
   constructor(el: HTMLDivElement, options?: LooseObject) {
     this.container = el;
-    this.options = {}
+    this.options = {
+      autoPlay: true,
+      muted: true,
+      loop: false,
+      endedCallback: ()=> {
+
+      }
+    }
     this.options = { ...this.options, ...options};
 
    
@@ -24,6 +31,7 @@ class MegatronVision {
 
     this.video = this.createVideo(this.options.src);
     this.video.addEventListener("loadedmetadata",this.setupVideo);
+    this.video.addEventListener("ended",this.options.endedCallback);
     this.setupVideo = this.setupVideo.bind(this);
   }
 
@@ -38,8 +46,10 @@ class MegatronVision {
     const productMesh = new THREE.Mesh(product, material);
     this.scene.add(productMesh);
 
-    this.video.play();
-
+    if(this.options.autoPlay) {
+      this.video.play();
+    }
+  
   }
 
   setupWorld = () => {
@@ -92,14 +102,16 @@ class MegatronVision {
     var el = document.createElement("video");
     el.style.display = "none";
     el.crossOrigin = "anonymous";
-    el.muted = true;
-    el.loop = true;
+    el.muted = this.options.muted;
+    el.loop = this.options.loop;
     el.src = source;
     return el;
   }
 
   destroy = () => {
     cancelAnimationFrame(this.requestId);
+    this.video.removeEventListener("loadedmetadata",this.setupVideo);
+    this.video.removeEventListener("ended",this.options.endedCallback);
     this.video = null;
     this.scene = null;
     this.camera = null;
