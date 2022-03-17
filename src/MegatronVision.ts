@@ -30,7 +30,6 @@ class MegatronVision {
   setupVideo = () => {
     let videoWidth = this.video.videoWidth;
     let videoHeight = this.video.videoHeight;
-    console.log(videoHeight);
     let aspect = videoWidth / videoHeight;
 
     let texture = new THREE.VideoTexture( this.video );
@@ -99,6 +98,14 @@ class MegatronVision {
     return el;
   }
 
+  destroy = () => {
+    cancelAnimationFrame(this.requestId);
+    this.video = null;
+    this.scene = null;
+    this.camera = null;
+    this.renderer = null;
+    this.container = null;
+  }
 
 }
 
