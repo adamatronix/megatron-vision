@@ -45,6 +45,7 @@ class MegatronVision {
     const material = new THREE.MeshLambertMaterial( { map:texture, side: THREE.BackSide } );
     const product = new THREE.BoxGeometry(  50*aspect, 50, 50* aspect );
     const productMesh = new THREE.Mesh(product, material);
+    productMesh.scale.x = -1;
     this.scene.add(productMesh);
 
     if(this.options.autoPlay) {
