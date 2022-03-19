@@ -117,7 +117,6 @@ class MegatronVision {
     cancelAnimationFrame(this.requestId);
     this.video.removeEventListener("loadedmetadata",this.setupVideo);
     this.video.removeEventListener("ended",this.options.endedCallback);
-    document.removeChild(this.video);
     this.video = null;
     this.scene = null;
     this.camera = null;
