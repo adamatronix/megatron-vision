@@ -141,7 +141,7 @@ class MegatronVision {
     return el;
   }
 
-  onMouseMove = (e) => {
+  onMouseMove = (e:any) => {
     const y = e.clientY - this.bounding.top;
     const x = e.clientX - this.bounding.left;
     const centerY = this.bounding.height / 2;
