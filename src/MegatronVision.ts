@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import debounce from 'lodash.debounce';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 interface LooseObject {
@@ -10,6 +11,9 @@ class MegatronVision {
   requestId:number;
   scene: THREE.Scene;
   controls: any;
+  bounding: any;
+  onResizeFunction: debounce;
+  onScrollFunction: debounce;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   video: HTMLVideoElement;
@@ -30,7 +34,13 @@ class MegatronVision {
    
     this.setupWorld();
     this.renderFrame();
-    window.addEventListener('resize', this.onResize);
+    this.onScroll();
+
+    this.onResizeFunction = debounce(this.onResize,600);
+    window.addEventListener('resize', this.onResizeFunction);
+    this.onScrollFunction = debounce(this.onScroll,600);
+    window.addEventListener('scroll', this.onScrollFunction);
+    this.container.addEventListener('mousemove', this.onMouseMove)
     this.video = this.createVideo(this.options.src);
     this.video.addEventListener("loadedmetadata",this.setupVideo);
     this.video.addEventListener("ended",this.options.endedCallback);
@@ -63,8 +73,10 @@ class MegatronVision {
     const far = 500;
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     this.camera.position.set(0, 0, 50);
-    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    this.camera.rotateX(10 * Math.PI / 180);
 		this.camera.updateProjectionMatrix();
+
+    
 
     const ambient = new THREE.AmbientLight( 0xcccccc );
 	  this.scene.add( ambient );
@@ -103,7 +115,7 @@ class MegatronVision {
   renderFrame = () => {
     this.requestId = requestAnimationFrame(this.renderFrame);
     this.renderer.clear();
-    
+
     if(this.options.orbit) {
       this.controls.update();
     }
@@ -122,6 +134,11 @@ class MegatronVision {
     return el;
   }
 
+  onMouseMove = (e) => {
+    const y = e.clientY - this.bounding.top;
+    const x = e.clientX - this.bounding.left;
+  }
+
   onResize = () => {
     const width = this.container.offsetWidth;
     const height = this.container.offsetHeight
@@ -130,10 +147,16 @@ class MegatronVision {
     this.camera.updateProjectionMatrix();
   }
 
+  onScroll = () => {
+    this.bounding = this.container.getBoundingClientRect()
+  }
+
   destroy = () => {
     this.video.pause();
     cancelAnimationFrame(this.requestId);
-    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('resize', this.onResizeFunction);
+    window.removeEventListener('scroll', this.onScrollFunction);
+    this.container.removeEventListener('mousemove', this.onMouseMove);
     this.video.removeEventListener("loadedmetadata",this.setupVideo);
     this.video.removeEventListener("ended",this.options.endedCallback);
     this.video = null;

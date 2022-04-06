@@ -6,8 +6,8 @@ import MegatronVision from './MegatronVision';
 const Container = styled.div`
   position: relative;
   width: 100%;
-
   height: 80vh;
+  top: 300px;
 `
 
 const Menu = styled.div` 
