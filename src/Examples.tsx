@@ -7,7 +7,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
 
-  height: 100vh;
+  height: 80vh;
 `
 
 const Menu = styled.div` 
@@ -44,10 +44,16 @@ const Example = () => {
   const pause = () => {
     megatronRef.current.video.pause();
   }
+
+  const fullscreen = () => {
+    if(elRef.current) {
+      elRef.current.requestFullscreen();
+    }
+  }
   return (
     <>
 <Container ref={elRef}>
-  <Menu><button onClick={destroyIt}>Destroy</button><button onClick={play}>Play</button><button onClick={pause}>Pause</button></Menu>
+  <Menu><button onClick={destroyIt}>Destroy</button><button onClick={play}>Play</button><button onClick={pause}>Pause</button><button onClick={fullscreen}>Fullscreen</button></Menu>
 
   </Container>
     

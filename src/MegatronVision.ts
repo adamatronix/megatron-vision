@@ -29,7 +29,7 @@ class MegatronVision {
    
     this.setupWorld();
     this.renderFrame();
-
+    window.addEventListener('resize', this.onResize);
     this.video = this.createVideo(this.options.src);
     this.video.addEventListener("loadedmetadata",this.setupVideo);
     this.video.addEventListener("ended",this.options.endedCallback);
@@ -40,9 +40,6 @@ class MegatronVision {
     let videoWidth = this.video.videoWidth;
     let videoHeight = this.video.videoHeight;
     let aspect = videoWidth / videoHeight;
-
-    console.log(this.video.currentTime);
-
     let texture = new THREE.VideoTexture( this.video );
     const material = new THREE.MeshLambertMaterial( { map:texture, side: THREE.BackSide } );
     const product = new THREE.BoxGeometry(  50*aspect, 50, 50* aspect );
@@ -116,9 +113,18 @@ class MegatronVision {
     return el;
   }
 
+  onResize = () => {
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight
+    this.renderer.setSize( width, height );
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+  }
+
   destroy = () => {
     this.video.pause();
     cancelAnimationFrame(this.requestId);
+    window.removeEventListener('resize', this.onResize);
     this.video.removeEventListener("loadedmetadata",this.setupVideo);
     this.video.removeEventListener("ended",this.options.endedCallback);
     this.video = null;
