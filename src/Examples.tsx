@@ -19,7 +19,7 @@ const Menu = styled.div`
 const videoUrl = 'https://prismic-io.s3.amazonaws.com/adamatronix/3c654cc8-a646-446a-a080-1835024f2aff_Dolby_Spheres_v2_Lossless-thedigitaltheater.mp4';
 const vimeo = 'https://player.vimeo.com/external/481036304.hd.mp4?s=e4dfafa5bddef5c359107995319e497432f5c26a&profile_id=175';
 const Example = () => {
-  const elRef = useRef();
+  const elRef = useRef<HTMLDivElement>();
   const megatronRef = useRef<MegatronVision>();
 
   useEffect(() => {

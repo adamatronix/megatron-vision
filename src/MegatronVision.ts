@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import debounce from 'lodash.debounce';
+import gsap from 'gsap';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 interface LooseObject {
@@ -12,11 +13,12 @@ class MegatronVision {
   scene: THREE.Scene;
   controls: any;
   bounding: any;
-  onResizeFunction: debounce;
-  onScrollFunction: debounce;
+  onResizeFunction: any;
+  onScrollFunction: any;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   video: HTMLVideoElement;
+  cameraRotation: any;
 
   constructor(el: HTMLDivElement, options?: LooseObject) {
     this.container = el;
@@ -30,7 +32,10 @@ class MegatronVision {
       }
     }
     this.options = { ...this.options, ...options};
-
+    this.cameraRotation = {
+      x: 0,
+      y: 0
+    }
    
     this.setupWorld();
     this.renderFrame();
@@ -74,7 +79,6 @@ class MegatronVision {
     const far = 500;
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     this.camera.position.set(0, 0, 50);
-    this.camera.rotateX(10 * Math.PI / 180);
 		this.camera.updateProjectionMatrix();
 
     
@@ -120,6 +124,8 @@ class MegatronVision {
     if(this.options.orbit) {
       this.controls.update();
     }
+    this.camera.rotation.set(this.cameraRotation.x, this.cameraRotation.y, 0)
+    this.camera.updateProjectionMatrix();
     
     this.renderer.render( this.scene, this.camera );
   }
@@ -138,6 +144,13 @@ class MegatronVision {
   onMouseMove = (e) => {
     const y = e.clientY - this.bounding.top;
     const x = e.clientX - this.bounding.left;
+    const centerY = this.bounding.height / 2;
+    const centerX = this.bounding.width / 2;
+
+    const xDeg = (y - centerY) / centerY;
+    const yDeg = (x - centerX) / centerX;
+
+    gsap.to(this.cameraRotation, { x: (xDeg * -10) * Math.PI / 180, y: (yDeg * -10) * Math.PI / 180, duration: 1})
   }
 
   onResize = () => {
