@@ -41,6 +41,8 @@ class MegatronVision {
     let videoHeight = this.video.videoHeight;
     let aspect = videoWidth / videoHeight;
 
+    console.log(this.video.currentTime);
+
     let texture = new THREE.VideoTexture( this.video );
     const material = new THREE.MeshLambertMaterial( { map:texture, side: THREE.BackSide } );
     const product = new THREE.BoxGeometry(  50*aspect, 50, 50* aspect );
@@ -79,7 +81,7 @@ class MegatronVision {
     light.position.set( -10, 20, -10 );
     this.scene.add(light);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true});
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true});
     this.renderer.setClearColor( 0x000000, 0 );
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -109,6 +111,7 @@ class MegatronVision {
     el.crossOrigin = "anonymous";
     el.muted = this.options.muted;
     el.loop = this.options.loop;
+    el.preload = "auto";
     el.src = source;
     return el;
   }
