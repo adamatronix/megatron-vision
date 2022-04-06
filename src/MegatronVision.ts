@@ -20,6 +20,7 @@ class MegatronVision {
       autoPlay: true,
       muted: true,
       loop: false,
+      orbit: false,
       endedCallback: ()=> {
 
       }
@@ -88,17 +89,25 @@ class MegatronVision {
     this.container.appendChild( this.renderer.domElement );
 
     //setup controls
-    this.controls = new OrbitControls( this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
-    this.controls.minDistance = 0;
-    this.controls.maxDistance = 75;
-    this.controls.enablePan = false;
+
+    if(this.options.orbit) {
+      this.controls = new OrbitControls( this.camera, this.renderer.domElement);
+      this.controls.enableDamping = true;
+      this.controls.minDistance = 0;
+      this.controls.maxDistance = 75;
+      this.controls.enablePan = false;
+    }
+    
   }
 
   renderFrame = () => {
     this.requestId = requestAnimationFrame(this.renderFrame);
     this.renderer.clear();
-    this.controls.update();
+    
+    if(this.options.orbit) {
+      this.controls.update();
+    }
+    
     this.renderer.render( this.scene, this.camera );
   }
 
