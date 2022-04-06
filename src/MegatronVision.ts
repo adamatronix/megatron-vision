@@ -41,6 +41,7 @@ class MegatronVision {
     this.onScrollFunction = debounce(this.onScroll,600);
     window.addEventListener('scroll', this.onScrollFunction);
     this.container.addEventListener('mousemove', this.onMouseMove)
+    this.container.addEventListener('fullscreenchange', this.onScroll);
     this.video = this.createVideo(this.options.src);
     this.video.addEventListener("loadedmetadata",this.setupVideo);
     this.video.addEventListener("ended",this.options.endedCallback);
@@ -157,6 +158,7 @@ class MegatronVision {
     window.removeEventListener('resize', this.onResizeFunction);
     window.removeEventListener('scroll', this.onScrollFunction);
     this.container.removeEventListener('mousemove', this.onMouseMove);
+    this.container.removeEventListener('fullscreenchange', this.onScroll);
     this.video.removeEventListener("loadedmetadata",this.setupVideo);
     this.video.removeEventListener("ended",this.options.endedCallback);
     this.video = null;
