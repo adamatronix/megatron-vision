@@ -154,11 +154,14 @@ class MegatronVision {
   }
 
   onResize = () => {
-    const width = this.container.offsetWidth;
-    const height = this.container.offsetHeight
-    this.renderer.setSize( width, height );
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
+    if(this.renderer && this.camera) {
+      const width = this.container.offsetWidth;
+      const height = this.container.offsetHeight
+      this.renderer.setSize( width, height );
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+
+    }
   }
 
   onScroll = () => {
