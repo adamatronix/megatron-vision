@@ -23,7 +23,7 @@ const Example = () => {
   const megatronRef = useRef<MegatronVision>();
 
   useEffect(() => {
-    megatronRef.current = new MegatronVision(elRef.current,{ autoPlay: false, muted: false, src: videoUrl, endedCallback: () => { console.log('video ended')} });
+    megatronRef.current = new MegatronVision(elRef.current,{ autoPlay: false, muted: false, stats: true, src: videoUrl, endedCallback: () => { console.log('video ended')} });
 
     return () => {
       megatronRef.current.destroy();
