@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import debounce from 'lodash.debounce';
 import gsap from 'gsap';
+import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 interface LooseObject {
@@ -15,6 +16,7 @@ class MegatronVision {
   bounding: any;
   onResizeFunction: any;
   onScrollFunction: any;
+  stats:Stats;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   video: HTMLVideoElement;
@@ -25,6 +27,7 @@ class MegatronVision {
     this.options = {
       autoPlay: true,
       muted: true,
+      stats: false,
       loop: false,
       orbit: false,
       endedCallback: ()=> {
@@ -32,6 +35,7 @@ class MegatronVision {
       }
     }
     this.options = { ...this.options, ...options};
+    this.stats = this.options.stats ? this.setupStats() : null;
     this.cameraRotation = {
       x: 0,
       y: 0
@@ -51,6 +55,18 @@ class MegatronVision {
     this.video.addEventListener("loadedmetadata",this.setupVideo);
     this.video.addEventListener("ended",this.options.endedCallback);
     this.setupVideo = this.setupVideo.bind(this);
+  }
+
+  setupStats = () => {
+    const stats = Stats();
+    stats.setMode(0);
+
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0';
+    stats.domElement.style.top = '0';
+    this.container.appendChild(stats.domElement);
+
+    return stats;
   }
 
   setupVideo = () => {
@@ -96,7 +112,7 @@ class MegatronVision {
     light.position.set( -10, 20, -10 );
     this.scene.add(light);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true});
+    this.renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", antialias: true, alpha: true});
     this.renderer.setClearColor( 0x000000, 0 );
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -128,6 +144,7 @@ class MegatronVision {
     this.camera.updateProjectionMatrix();
     
     this.renderer.render( this.scene, this.camera );
+    this.stats ? this.stats.update() : null;
   }
 
   createVideo = (source:string) => {
